@@ -2,8 +2,8 @@ from os import listdir
 import pandas as pd
 
 def get_ids_in_csv():
-    list_ids_train_input = [f for f in listdir("../data/GenData/images/")]
-    list_ids_train_labels = [f for f in listdir("../data/GenData/labels/")]
+    list_ids_train_input = [f for f in listdir("../data/GenData/TrainData/images/")]
+    list_ids_train_labels = [f for f in listdir("../data/GenData/TrainData/labels/")]
 
     list_ids_train_input = sorted(list_ids_train_input)
     list_ids_train_labels = sorted(list_ids_train_labels)

@@ -5,8 +5,7 @@ from PIL import Image
 import numpy as np
 from torchvision import transforms
 from torch.utils.data.sampler import SubsetRandomSampler
-import skimage
-
+from skimage import io
 
 class CellData(Dataset):
     def __init__(self, file_data_idx, file_label_idx, transform=None, mode="train"):
@@ -32,17 +31,17 @@ class CellData(Dataset):
         #    return self.__getitem__(np.random.randint(0, self.__len__()))
         file_id = self.file_data_idx["ids"].iloc[index]
         if self.mode is "train":
-            train_id = self.file_data_idx["ids"].iloc[index]
-            label_id = self.file_data_idx["ids"].iloc[index]
-            self.image_path = os.path.join(self.data_dir, train_id)
-            self.label_path = os.path.join(self.label_dir, label_id)
-            #image = Image.open(self.image_path)
-            #label = Image.open(self.label_path)
-            image = skimage.io.imread(self.image_path)
-            label = skimage.io.imread(self.label_path)
+            #train_id = self.file_data_idx["ids"].iloc[index]
+            #label_id = self.file_data_idx["ids"].iloc[index]
+            self.image_path = os.path.join(self.data_dir, file_id)
+            self.label_path = os.path.join(self.label_dir, file_id)
+            image = Image.open(self.image_path)
+            label = Image.open(self.label_path)
+            #image = io.imread(self.image_path)
+            #label = io.imread(self.label_path)
             if self.transform is not None:
                 image = self.transform(image)
-                label = self.transform(image)
+                label = self.transform(label)
             return image, label
         if self.mode is "validation":
             pass
