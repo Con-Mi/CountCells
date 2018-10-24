@@ -5,7 +5,7 @@ from torchvision import transforms
 
 from dense_linknet_model import denseLinkModel
 from helper import jaccard, dice, save_model
-from dataloader import CellDataLoader
+from dataloader import CellDataLoader, CellTrainValidLoader
 
 import time
 import copy
@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 4
+batch_size = 2
 nr_epochs = 6
 momentum = 0.92
 lr_rate = 0.02
@@ -26,12 +26,14 @@ if use_cuda:
     segm_model.cuda()
 
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
-train_loader = CellDataLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=20)
+#train_loader = CellDataLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=20)
 
 optimizer = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
 criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
 
-dict_loaders = {"train":train_loader, "valid":train_loader}
+train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=20)
+
+dict_loaders = {"train":train_loader, "valid":valid_loader}
 
 def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, scheduler=None):
     start_time = time.time()
@@ -52,7 +54,7 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             jaccard_acc = 0.0
             dice_loss = 0.0
 
-            for input_img, labels in dataloaders[phase]:
+            for input_img, labels in tqdm(dataloaders[phase], total=len(dataloaders[phase])):
                 input_img = input_img.cuda() if use_cuda else input_img
                 labels = labels.cuda() if use_cuda else labels
 

@@ -62,3 +62,29 @@ def CellDataLoader(data_transform=None, mode="train", batch_sz=2, workers=1):
     dataset = CellData(file_idxs, label_idxs, transform=data_transform, mode="train")
     dataloader = DataLoader(dataset, batch_size=batch_sz, num_workers=workers, shuffle=True)
     return dataloader
+
+def CellTrainValidLoader(data_transform=None, validation_split=0.1, mode="train", batch_sz=2, workers=1):
+    file_idxs = pd.read_csv("../data/GenData/train_input_ids.csv")
+    label_idxs = pd.read_csv("../data/GenData/train_labels_ids.csv")
+    if data_transform is None:
+        data_transform = transforms.ToTensor()
+    dataset = CellData(file_idxs, label_idxs, transform=data_transform, mode="train")
+    
+    shuffle_dataset = True
+    random_seed = 1234
+
+    dataset_size = len(dataset)
+    indices = list(range(dataset_size))
+    split = int(np.floor(validation_split * dataset_size))
+    if shuffle_dataset:
+        np.random.seed(random_seed)
+        np.random.shuffle(indices)
+
+    train_indices, val_indices = indices[split:], indices[:split]
+    train_sampler = SubsetRandomSampler(train_indices)
+    valid_sampler = SubsetRandomSampler(val_indices)
+
+    train_loader = DataLoader(dataset, batch_size=batch_sz, sampler = train_sampler, num_workers=workers)
+    validation_loader = DataLoader(dataset, batch_size=batch_sz, sampler = valid_sampler, num_workers=workers)
+    
+    return train_loader, validation_loader
