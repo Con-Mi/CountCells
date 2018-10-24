@@ -14,12 +14,12 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 16
-nr_epochs = 4
-momentum = 0.93
-lr_rate = 0.025
+batch_size = 10
+nr_epochs = 6
+momentum = 0.92
+lr_rate = 0.02
 milestones = [1, 2, 3, 5, 7, 8]
-img_size = 256
+img_size = 384
 
 segm_model = denseLinkModel(input_channels=4, pretrained=True)
 if use_cuda:
