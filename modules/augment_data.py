@@ -1,4 +1,4 @@
-from dataloader import CellData, CellTrainData
+from sk_dataloader import CellData, CellTrainData
 import pandas as pd
 import torch
 from tqdm import tqdm

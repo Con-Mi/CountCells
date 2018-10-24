@@ -20,5 +20,3 @@ echo -e "${YELLOW} Downloading Test Data part 2"
 echo -e "${NC}"
 wget https://data.broadinstitute.org/bbbc/BBBC038/stage2_test_final.zip
 wget https://data.broadinstitute.org/bbbc/BBBC038/stage2_solution_final.csv
-
-
