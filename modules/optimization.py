@@ -79,12 +79,10 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             print("| {} Loss: {:.4f} | Jaccard Average Acc: {:.4f} |".format(phase, epoch_loss, aver_jaccard))
             print("_"*15)
             if phase == "valid" and aver_jaccard > best_acc:
-                #best_acc = aver_jaccard
-                #best_model_wts = copy.deepcopy(cust_model.state_dict)
-                pass
+                best_acc = aver_jaccard
+                best_model_wts = copy.deepcopy(cust_model.state_dict)
             if phase == "valid":
-                #val_acc_history.append(aver_jaccard)
-                pass
+                val_acc_history.append(aver_jaccard)
         print("^"*15)
         print(" ")
     time_elapsed = time.time() - start_time
@@ -95,8 +93,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizer, nr_epochs)
-#save_model(segm_model, name="dense_linknet.pt")
-
-
-
-
+save_model(segm_model, name="dense_linknet_6.pt")
