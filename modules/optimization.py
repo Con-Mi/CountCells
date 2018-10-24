@@ -52,7 +52,7 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             jaccard_acc = 0.0
             dice_loss = 0.0
 
-            for input_img, labels in tqdm(dataloaders[phase], total=len(dataloaders[phase])):
+            for input_img, labels in dataloaders[phase]:
                 input_img = input_img.cuda() if use_cuda else input_img
                 labels = labels.cuda() if use_cuda else labels
 
