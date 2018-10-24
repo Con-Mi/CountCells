@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 4
+batch_size = 12
 nr_epochs = 2
 momentum = 0.92
 lr_rate = 0.015
@@ -75,7 +75,7 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             #aver_dice = dice_acc / len(dataloaders[phase])
 
             print("| {} Loss: {:.4f} | Jaccard Average Acc: {:.4f} |".format(phase, epoch_loss, aver_jaccard))
-            print("*"*15)
+            print("_"*15)
             if phase == "valid" and aver_jaccard > best_acc:
                 #best_acc = aver_jaccard
                 #best_model_wts = copy.deepcopy(cust_model.state_dict)
