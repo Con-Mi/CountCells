@@ -14,12 +14,12 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 2
+batch_size = 8
 nr_epochs = 4
 momentum = 0.92
 lr_rate = 0.015
 milestones = [1, 2, 3, 5, 7, 8]
-img_size = 512
+img_size = 256
 
 segm_model = denseLinkModel(input_channels=4, pretrained=True)
 if use_cuda:
@@ -52,7 +52,7 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             jaccard_acc = 0.0
             dice_loss = 0.0
 
-            for input_img, labels in dataloaders[phase]:
+            for input_img, labels in tqdm(dataloaders[phase], total=len(dataloaders[phase])):
                 input_img = input_img.cuda() if use_cuda else input_img
                 labels = labels.cuda() if use_cuda else labels
 
