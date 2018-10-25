@@ -18,9 +18,9 @@ batch_size = 2
 nr_epochs = 10
 momentum = 0.92
 lr_rate = 0.02
-milestones = [1, 2, 3, 5, 7, 8]
+milestones = [1, 3, 5, 7, 8, 9]
 img_size = 384
-gamma = 0.05
+gamma = 0.5
 
 segm_model = denseLinkModel(input_channels=4, pretrained=True)
 if use_cuda:
@@ -29,9 +29,8 @@ if use_cuda:
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
 optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
-optimizerAdam = optim.Adam(segm_model.parameters(), lr=lr_rate)
 criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
-scheduler = optim.lr_scheduler.MultiStepLR(optimizerAdam, milestones=milestones, gamma=gamma)
+scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
 
 train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=20)
@@ -95,5 +94,5 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     cust_model.load_state_dict(best_model_wts)
     return cust_model, val_acc_history
 
-segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerAdam, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="dense_linknet_10_Adam.pt")
+segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
+save_model(segm_model, name="dense_linknet_10.pt")
