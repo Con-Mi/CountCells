@@ -63,7 +63,7 @@ class DenseSegmModel(nn.Module):
         conv2 = self.layer2(conv1)
         conv3 = self.layer3(conv2)
         conv4 = self.layer4(conv3)
-        conv5 = self.layer5(conv4)
+        conv5 = self.gn(self.layer5(conv4))
         out = self.pool(self.gn(conv5))
 
         center = self.center(out)
