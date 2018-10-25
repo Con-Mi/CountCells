@@ -14,12 +14,12 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 2
-nr_epochs = 10
+batch_size = 1
+nr_epochs = 16
 momentum = 0.92
 lr_rate = 0.02
-milestones = [1, 3, 5, 7, 8, 9]
-img_size = 384
+milestones = [5, 7, 8, 10, 12, 14]
+img_size = 512
 gamma = 0.5
 
 segm_model = denseLinkModel(input_channels=4, pretrained=True)
@@ -95,4 +95,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="dense_linknet_10.pt")
+save_model(segm_model, name="dense_linknet_16.pt")
