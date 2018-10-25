@@ -15,21 +15,24 @@ from tqdm import tqdm
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
 batch_size = 2
-nr_epochs = 6
+nr_epochs = 10
 momentum = 0.92
 lr_rate = 0.02
 milestones = [1, 2, 3, 5, 7, 8]
 img_size = 384
+gamma = 0.05
 
 segm_model = denseLinkModel(input_channels=4, pretrained=True)
 if use_cuda:
     segm_model.cuda()
 
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
-#train_loader = CellDataLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=20)
 
-optimizer = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
+optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
+optimizerAdam = optim.Adam(segm_model.parameters(), lr=lr_rate)
 criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
+scheduler = optim.lr_scheduler.MultiStepLR(optimizerAdam, milestones=milestones, gamma=gamma)
+
 
 train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=20)
 
@@ -48,8 +51,7 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             if phase == "train":
                 cust_model.train()
             if phase == "valid":
-                #cust_model.eval()
-                pass
+                cust_model.eval()
             running_loss = 0.0
             jaccard_acc = 0.0
             dice_loss = 0.0
@@ -85,6 +87,7 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
                 val_acc_history.append(aver_jaccard)
         print("^"*15)
         print(" ")
+        scheduler.step()
     time_elapsed = time.time() - start_time
     print("Training Complete in {:.0f}m {:.0f}s".format(time_elapsed//60, time_elapsed % 60))
     print("Best Validation Accuracy: {:.4f}".format(best_acc))
@@ -92,5 +95,5 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     cust_model.load_state_dict(best_model_wts)
     return cust_model, val_acc_history
 
-segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizer, nr_epochs)
-save_model(segm_model, name="dense_linknet_6.pt")
+segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerAdam, nr_epochs, scheduler=scheduler)
+save_model(segm_model, name="dense_linknet_10_Adam.pt")
