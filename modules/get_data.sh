@@ -33,6 +33,9 @@ cd ..
 
 unzip stage1_train.zip -d ./DSB-Stage1
 cd ../modules
-python3 get_data_ids.py
-python3 make_data.py
+rm stage1_train.zip
 
+echo -e "${YELLOW} Making the data now.."
+echo -e "${NC}"
+python3 make_data.py
+python3 get_data_ids.py
