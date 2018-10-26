@@ -14,17 +14,18 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 2
+batch_size = 8
 nr_epochs = 20
 momentum = 0.95
 lr_rate = 0.03
 milestones = [5, 7, 8, 10, 12, 14, 16, 17, 18]
-img_size = 384
+img_size = 512
 gamma = 0.5
 
 segm_model = denseLinkModel(input_channels=4, pretrained=True)
 if use_cuda:
     segm_model.cuda()
+segm_model = nn.DataParallel(segm_model)
 
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
