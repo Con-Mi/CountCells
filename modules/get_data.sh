@@ -20,3 +20,19 @@ echo -e "${YELLOW} Downloading Test Data part 2"
 echo -e "${NC}"
 wget https://data.broadinstitute.org/bbbc/BBBC038/stage2_test_final.zip
 wget https://data.broadinstitute.org/bbbc/BBBC038/stage2_solution_final.csv
+
+mkdir ./DSB-Stage1
+mkdir ./GenData
+cd ./GenData
+mkdir ./TrainData
+cd /TrainData
+mkdir ./images
+mkdir ./labels
+cd ..
+cd ..
+
+unzip stage1_train.zip -d ./DSB-Stage1
+cd ../modules
+python3 get_data_ids.py
+python3 make_data.py
+
