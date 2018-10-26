@@ -15,8 +15,8 @@ from tqdm import tqdm
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
 batch_size = 16
-nr_epochs = 20
-momentum = 0.92
+nr_epochs = 40
+momentum = 0.97
 lr_rate = 0.03
 milestones = [5, 7, 8, 10, 12, 14, 16, 17, 18]
 img_size = 512
@@ -95,4 +95,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="dense_linknet_20.pt")
+save_model(segm_model, name="dense_linknet_40.pt")
