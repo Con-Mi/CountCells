@@ -16,9 +16,9 @@ use_cuda = torch.cuda.is_available()
 # Hyperparameters
 batch_size = 2
 nr_epochs = 20
-momentum = 0.93
+momentum = 0.92
 lr_rate = 0.1
-milestones = [5, 7, 8, 10, 12, 14, 16, 17, 18,]
+milestones = [5, 7, 8, 10, 12, 14, 16, 17, 18]
 img_size = 384
 gamma = 0.5
 
