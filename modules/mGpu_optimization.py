@@ -22,7 +22,7 @@ milestones = [5, 7, 8, 10, 12, 14, 16, 17, 18, 25, 30, 36, 40, 42, 47]
 img_size = 512
 gamma = 0.5
 
-segm_model = denseLinkModel(input_channels=4, pretrained=True)
+segm_model = denseLinkModel(input_channels=3, pretrained=True)
 if use_cuda:
     segm_model.cuda()
 segm_model = nn.DataParallel(segm_model)
