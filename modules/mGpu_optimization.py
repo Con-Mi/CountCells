@@ -59,8 +59,8 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             dice_loss = 0.0
 
             for input_img, labels in tqdm(dataloaders[phase], total=len(dataloaders[phase])):
-                input_img = input_img.to(device) if use_cuda else input_img
-                labels = labels.to(device) if use_cuda else labels
+                input_img = input_img.cuda() if use_cuda else input_img
+                labels = labels.cuda() if use_cuda else labels
 
                 optimizer.zero_grad()
 
