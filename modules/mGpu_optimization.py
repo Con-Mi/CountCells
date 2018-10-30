@@ -23,9 +23,10 @@ img_size = 384
 gamma = 0.5
 
 segm_model = denseLinkModel(input_channels=3, pretrained=True)
+segm_model = nn.DataParallel(segm_model, device_ids=[0, 1, 2, 3])
 if use_cuda:
     segm_model.cuda()
-segm_model = nn.DataParallel(segm_model, device_ids=[0, 1, 2, 3])
+
 
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
