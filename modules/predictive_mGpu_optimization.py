@@ -15,10 +15,10 @@ from tqdm import tqdm
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
 batch_size = 16
-nr_epochs = 10
+nr_epochs = 50
 momentum = 0.93
 lr_rate = 0.035
-milestones = [ 2, 4, 6, 7, 9 ]
+milestones = [ 5, 8, 17, 24, 30, 36, 40, 44, 48 ]
 img_size = 384
 gamma = 0.5
 
