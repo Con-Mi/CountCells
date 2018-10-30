@@ -13,27 +13,25 @@ from tqdm import tqdm
 
 
 use_cuda = torch.cuda.is_available()
-device = torch.device("cuda:3")
 # Hyperparameters
-batch_size = 6
+batch_size = 16
 nr_epochs = 50
 momentum = 0.92
-lr_rate = 0.035
+lr_rate = 0.03
 milestones = [5, 7, 8, 10, 12, 14, 16, 17, 18, 25, 30, 36, 40, 42, 47]
-img_size = 512
+img_size = 384
 gamma = 0.5
 
 segm_model = denseLinkModel(input_channels=3, pretrained=True)
-segm_model = nn.DataParallel(segm_model, device_ids=[0, 1, 2, 3])
 if use_cuda:
     segm_model.cuda()
-
+segm_model = nn.DataParallel(segm_model)
 
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
 optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
-#criterion = nn.BCEWithLogitsLoss().to(device) if use_cuda else nn.BCEWithLogitsLoss()
-criterion = nn.BCEWithLogitsLoss()
+criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
+#criterion = nn.BCEWithLogitsLoss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
 train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=4)
