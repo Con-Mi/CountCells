@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 
 use_cuda = torch.cuda.is_available()
-device = torch.device("cuda:0")
+device = torch.device("cuda:3")
 # Hyperparameters
 batch_size = 6
 nr_epochs = 50
