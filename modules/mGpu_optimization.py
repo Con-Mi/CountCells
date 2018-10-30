@@ -33,7 +33,7 @@ optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
 criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
-train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=20)
+train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=0)
 
 dict_loaders = {"train":train_loader, "valid":valid_loader}
 
