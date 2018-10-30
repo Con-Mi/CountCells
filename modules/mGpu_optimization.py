@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 10
+batch_size = 30
 nr_epochs = 50
 momentum = 0.92
 lr_rate = 0.035
@@ -55,7 +55,7 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             jaccard_acc = 0.0
             dice_loss = 0.0
 
-            for input_img, labels in dataloaders[phase]:
+            for input_img, labels in tqdm(dataloaders[phase], total=len(dataloaders[phase])):
                 input_img = input_img.cuda() if use_cuda else input_img
                 labels = labels.cuda() if use_cuda else labels
 
