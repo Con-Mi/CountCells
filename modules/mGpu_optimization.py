@@ -13,13 +13,14 @@ from tqdm import tqdm
 
 
 use_cuda = torch.cuda.is_available()
+device = torch.device("cuda:2")
 # Hyperparameters
-batch_size = 16
+batch_size = 6
 nr_epochs = 50
 momentum = 0.92
 lr_rate = 0.035
 milestones = [5, 7, 8, 10, 12, 14, 16, 17, 18, 25, 30, 36, 40, 42, 47]
-img_size = 384
+img_size = 512
 gamma = 0.5
 
 segm_model = denseLinkModel(input_channels=3, pretrained=True)
@@ -57,8 +58,8 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
             dice_loss = 0.0
 
             for input_img, labels in tqdm(dataloaders[phase], total=len(dataloaders[phase])):
-                input_img = input_img.cuda() if use_cuda else input_img
-                labels = labels.cuda() if use_cuda else labels
+                input_img = input_img.to(device) if use_cuda else input_img
+                labels = labels.to(device) if use_cuda else labels
 
                 optimizer.zero_grad()
 
