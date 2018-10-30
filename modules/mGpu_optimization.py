@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 
 use_cuda = torch.cuda.is_available()
-device = torch.device("cuda:2")
+device = torch.device("cuda:0")
 # Hyperparameters
 batch_size = 6
 nr_epochs = 50
@@ -32,7 +32,8 @@ if use_cuda:
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
 optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
-criterion = nn.BCEWithLogitsLoss().to(device) if use_cuda else nn.BCEWithLogitsLoss()
+#criterion = nn.BCEWithLogitsLoss().to(device) if use_cuda else nn.BCEWithLogitsLoss()
+criterion = nn.BCEWithLogitsLoss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
 train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=4)
