@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 8
+batch_size = 16
 nr_epochs = 50
 momentum = 0.92
 lr_rate = 0.035
