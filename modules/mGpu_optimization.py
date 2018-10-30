@@ -32,10 +32,10 @@ if use_cuda:
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
 optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
-criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
+criterion = nn.BCEWithLogitsLoss().to(device) if use_cuda else nn.BCEWithLogitsLoss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
-train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=0)
+train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=4)
 
 dict_loaders = {"train":train_loader, "valid":valid_loader}
 
