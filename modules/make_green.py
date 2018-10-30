@@ -1,5 +1,5 @@
 import os
-import skimage
+from skimage import io
 from skimage import color
 import sys
 from tqdm import tqdm
@@ -16,7 +16,7 @@ green = [0, 10, 0]
 
 for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
     path = TRAIN_PATH+id_
-    img = skimage.io.imread(path + "/images/" + id_ + ".png")
+    img = io.imread(path + "/images/" + id_ + ".png")
     img = color.rgba2rgb(img)
     img_g = green*img
     img_g = (img_g*255).astype(np.uint8)
@@ -25,7 +25,7 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
 
     mask = np.zeros((img.shape[0], img.shape[1]), dtype=np.bool)
     for mask_file in next(os.walk(path+"/masks/"))[2]:
-        mask_ = skimage.io.imread(path + "/masks/" + mask_file)
+        mask_ = io.imread(path + "/masks/" + mask_file)
         mask = np.maximum(mask, mask_)
     mask_im = Image.fromarray(mask)
     mask_im.save("../data/GenData/TrainData/labels/" + str("%04d" % n) + "_.png")

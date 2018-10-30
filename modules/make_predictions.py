@@ -3,9 +3,11 @@ from matplotlib import pyplot as plt
 from torch import sigmoid
 from torchvision import transforms
 from torchvision import utils
+from torch import nn
 
 import time
 from PIL import Image
+from tqdm import tqdm
 
 from helper import load_model
 from dense_linknet_model import denseLinkModel
@@ -15,8 +17,11 @@ from get_data_ids import get_ids_in_list
 start_time = time.time()
 
 segm_model = denseLinkModel(input_channels=4)
-segm_model = load_model(segm_model, model_dir="./dense_linknet_16.pt")
-trf = transforms.Compose([ transforms.Resize(size=(384, 384)), transforms.ToTensor() ])
+segm_model = nn.DataParallel(segm_model)
+segm_model = load_model(segm_model, model_dir="./dense_linknet_20.pt")
+
+img_size = 512
+trf = transforms.Compose([ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ])
 
 data_path = "../test/images/"
 prediction_path = "../test/predictions/"
@@ -26,9 +31,9 @@ thrs=0.56
 upper = 1
 lower = 0
 
-for img_id in images:
+for img_id in tqdm(images, total=len(images)):
     img1 = Image.open(data_path + img_id)
-    img1 = img1.resize(size=(384, 384))
+    img1 = img1.resize(size=(img_size, img_size))
     img = Image.open(data_path + img_id).convert("RGBA")
     img_in = trf(img)
     img1.save(prediction_path+img_id)
