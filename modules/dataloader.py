@@ -35,7 +35,7 @@ class CellData(Dataset):
             #label_id = self.file_data_idx["ids"].iloc[index]
             self.image_path = os.path.join(self.data_dir, file_id)
             self.label_path = os.path.join(self.label_dir, file_id)
-            image = Image.open(self.image_path)
+            image = Image.open(self.image_path).convert("RGB")
             label = Image.open(self.label_path)
             #image = io.imread(self.image_path)
             #label = io.imread(self.label_path)
