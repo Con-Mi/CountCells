@@ -3,7 +3,7 @@ from torch import nn
 from torch import optim
 from torchvision import transforms
 
-from dense_linknet_model import denseLinkModel
+from var_dense_linknet_model import denseLinkModel
 from helper import jaccard, dice, save_model
 from dataloader import CellDataLoader, CellTrainValidLoader
 
@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 16
+batch_size = 14
 nr_epochs = 50
 momentum = 0.93
 lr_rate = 0.035
@@ -96,4 +96,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="dense_linknet_384_green_adgrad.pt")
+save_model(segm_model, name="dense_linknet_384_green_adgrad_bce.pt")
