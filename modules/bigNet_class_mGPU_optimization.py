@@ -30,7 +30,7 @@ segm_model = nn.DataParallel(segm_model)
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
 # optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
-optimizerSGD = optim.Adagrad(segm_model.parameters, lr=lr_rate)
+optimizerSGD = optim.Adagrad(segm_model.parameters(), lr=lr_rate)
 criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
