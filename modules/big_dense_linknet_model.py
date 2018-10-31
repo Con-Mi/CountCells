@@ -81,7 +81,7 @@ class DenseSegmModel(nn.Module):
         conv3 = self.layer3(conv2)
         conv4 = self.layer4(conv3)
         conv5 = self.layer5(conv4)
-        out = self.TransitionLayer(conv5)
+        out = self.transition(conv5)
 
         center = self.center(out)
 
