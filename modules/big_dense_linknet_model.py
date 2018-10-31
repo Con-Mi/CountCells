@@ -61,7 +61,7 @@ class DenseSegmModel(nn.Module):
         self.layer4 = encoder[8:10]    
         self.layer5 = encoder[10]
 
-        self.transition = self.TransitionLayer(in_chnl=1664, out_chnl=1664)
+        self.transition = TransitionLayer(in_chnl=1664, out_chnl=1664)
 
         self.pool = nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
 
