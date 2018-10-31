@@ -14,12 +14,12 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 4
-nr_epochs = 10
+batch_size = 16
+nr_epochs = 50
 momentum = 0.93
 lr_rate = 0.035
-milestones = [ 2, 4, 6, 7, 9 ]
-img_size = 512
+milestones = [ 7, 13, 18, 25, 30, 35, 41, 46, 48 ]
+img_size = 384
 gamma = 0.5
 
 segm_model = denseLinkModel(input_channels=3, pretrained=True)
@@ -29,7 +29,8 @@ segm_model = nn.DataParallel(segm_model)
 
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
-optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
+# optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
+optimizerSGD = optim.Adagrad(segm_model.parameters, lr=lr_rate)
 criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
@@ -95,4 +96,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="dense_linknet_512_green.pt")
+save_model(segm_model, name="dense_linknet_384_green_adgrad.pt")

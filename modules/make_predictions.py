@@ -16,9 +16,9 @@ from get_data_ids import get_ids_in_list
 
 start_time=time.time()
 
-segm_model=denseLinkModel(input_channels=4)
+segm_model=denseLinkModel(input_channels=3)
 segm_model=nn.DataParallel(segm_model)
-segm_model=load_model(segm_model, model_dir="./dense_linknet_20.pt")
+segm_model=load_model(segm_model, model_dir="./dense_linknet_512_green.pt")
 
 img_size=384
 trf = transforms.Compose([ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ])
@@ -34,7 +34,7 @@ lower=0
 for img_id in tqdm(images, total=len(images)):
     img1 = Image.open(data_path + img_id)
     img1 = img1.resize(size=(img_size, img_size))
-    img = Image.open(data_path + img_id).convert("RGBA")
+    img = Image.open(data_path + img_id).convert("RGB")
     img_in = trf(img)
     img1.save(prediction_path+img_id)
     img_in = img_in.unsqueeze(dim=0)
@@ -42,7 +42,8 @@ for img_id in tqdm(images, total=len(images)):
     pred = sigmoid(output)
     pred = pred.squeeze()
     output_np = pred.detach().numpy()
-    binary_out = np.where(output_np > thrs, upper, lower)
+    #binary_out = np.where(output_np > thrs, upper, lower)
+    binary_out = output_np
     #mask = Image.fromarray(binary_out)
     #mask.save(img_id + "_mask.png")
     plt.imsave(prediction_path + img_id + "_mask.png", binary_out)
