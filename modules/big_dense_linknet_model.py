@@ -32,6 +32,20 @@ class UpsampleLayer(nn.Sequential):
                 nn.ELU(inplace=True)
             )
 
+class TransitionLayer(nn.Module):
+    def __init__(self, in_chnl, out_chnl):
+        super(TransitionLayer, self).__init__()
+        self.gn = nn.GroupNorm(num_groups=16, num_channels = in_chnl)
+        self.elu = nn.ELU(inplace=True)
+        self.conv = nn.Conv2d(in_chnl, out_chnl, kernel_size=1, padding=1, bias=False)
+        self.avg_pool = nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
+    def forward(self, x):
+        out = self.gn(x)
+        out = self.elu(out)
+        out = self.conv(out)
+        out = self.avg_pool(out)
+        return out
+
 class DenseSegmModel(nn.Module):
     def __init__(self, input_channels, num_filters=32, num_classes=1, pretrained=False):
         super(DenseSegmModel, self).__init__()
