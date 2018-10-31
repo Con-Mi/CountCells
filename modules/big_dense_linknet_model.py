@@ -37,7 +37,7 @@ class TransitionLayer(nn.Module):
         super(TransitionLayer, self).__init__()
         self.gn = nn.GroupNorm(num_groups=16, num_channels = in_chnl)
         self.elu = nn.ELU(inplace=True)
-        self.conv = nn.Conv2d(in_chnl, out_chnl, kernel_size=1, padding=1, bias=False)
+        self.conv = nn.Conv2d(in_chnl, out_chnl, kernel_size=1, padding=0, bias=False)
         self.avg_pool = nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
     def forward(self, x):
         out = self.gn(x)
@@ -80,10 +80,11 @@ class DenseSegmModel(nn.Module):
         conv2 = self.layer2(conv1)
         conv3 = self.layer3(conv2)
         conv4 = self.layer4(conv3)
-        conv5 = self.gn(self.layer5(conv4))
-        out = self.pool(self.gn(conv5))
+        conv5 = self.layer5(conv4)
+        out = self.TransitionLayer(conv5)
 
         center = self.center(out)
+
         dec5 = self.pool(self.dec5(torch.cat([center, conv5], 1)))
         dec4 = self.dec4(torch.cat([dec5, conv4], 1))
         dec3 = self.dec3(torch.cat([dec4, conv3], 1))

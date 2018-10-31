@@ -18,7 +18,7 @@ start_time=time.time()
 
 segm_model=denseLinkModel(input_channels=3)
 segm_model=nn.DataParallel(segm_model)
-segm_model=load_model(segm_model, model_dir="./dense_linknet_512_green.pt")
+segm_model=load_model(segm_model, model_dir="./dense_linknet_384_pred_green.pt")
 
 img_size=384
 trf = transforms.Compose([ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ])
