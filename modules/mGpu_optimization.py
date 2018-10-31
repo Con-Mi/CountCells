@@ -96,4 +96,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="dense_linknet_384_green_adgrad_bce.pt")
+save_model(segm_model, name="var_dense_linknet_384_green_adgrad_bce.pt")
