@@ -74,6 +74,7 @@ class DenseSegmModel(nn.Module):
         self.transition = TransitionLayer(in_chnl=1024, out_chnl=1024)
 
         self.pool = nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
+        
         self.bottleneck = Bottleneck(in_chnl=1024+num_filters*8, out_chnl=num_filters*8)
 
         self.center = UpsampleLayer(in_chnl=1024, mid_chnl=num_filters*8, out_chnl=num_filters*8)

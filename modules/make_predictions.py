@@ -10,7 +10,7 @@ from PIL import Image
 from tqdm import tqdm
 
 from helper import load_model
-from dense_linknet_model import denseLinkModel
+from var_dense_linknet_model import denseLinkModel
 from get_data_ids import get_ids_in_list
 
 
@@ -18,13 +18,13 @@ start_time=time.time()
 
 segm_model=denseLinkModel(input_channels=3)
 segm_model=nn.DataParallel(segm_model)
-segm_model=load_model(segm_model, model_dir="./dense_linknet_384_pred_green.pt")
+segm_model=load_model(segm_model, model_dir="./var_dense_linknet_384_green_sgd_bce.pt")
 
 img_size=384
 trf = transforms.Compose([ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ])
 
 data_path = "../test/images/"
-prediction_path = "../test/predictions/"
+prediction_path = "../test/gr_predictions_bce/"
 images = get_ids_in_list(data_path)
 
 thrs=0.56
