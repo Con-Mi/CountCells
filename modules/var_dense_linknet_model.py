@@ -20,6 +20,7 @@ class UpsampleLayer(nn.Sequential):
         super(UpsampleLayer, self).__init__()
         if not transp:
             self.block = nn.Sequential(
+                nn.GroupNorm(num_groups=16, num_channels=in_chnl),
                 nn.Upsample(scale_factor=2, mode="nearest"),
                 ConvEluGrNorm(in_chnl, mid_chnl),
                 ConvEluGrNorm(mid_chnl, out_chnl)
@@ -32,19 +33,28 @@ class UpsampleLayer(nn.Sequential):
                 nn.ELU(inplace=True)
             )
 
-class TransitionLayer(nn.Module):
+class TransitionLayer(nn.Sequential):
     def __init__(self, in_chnl, out_chnl):
         super(TransitionLayer, self).__init__()
-        self.gn = nn.GroupNorm(num_groups=16, num_channels = in_chnl)
-        self.elu = nn.ELU(inplace=True)
-        self.conv = nn.Conv2d(in_chnl, out_chnl, kernel_size=1, padding=0, bias=False)
-        self.avg_pool = nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
-    def forward(self, x):
-        out = self.gn(x)
-        out = self.elu(out)
-        out = self.conv(out)
-        out = self.avg_pool(out)
-        return out
+        self.block = nn.Sequential(
+            nn.GroupNorm(num_groups = 16, num_channels=in_chnl),
+            nn.ELU(inplace=True),
+            nn.Conv2d(in_chnl, out_chnl, kernel_size=1, padding=0, bias=False),
+            nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+
+
+class Bottleneck(nn.Sequential):
+    def __init__(self, in_chnl, out_chnl):
+        super(Bottleneck, self).__init__()
+        self.block = nn.Sequential(
+            nn.GroupNorm(num_groups=16, num_channels=in_chnl),
+            nn.ELU(),
+            nn.Conv2d(in_channels=in_chnl, out_channels=in_chnl, kernel_size=1, padding=0,  bias=False),
+            nn.GroupNorm(num_groups=16, num_channels=in_chnl),
+            nn.ELU(),
+            ConvEluGrNorm(inp_chnl=in_chnl, out_chnl=out_chnl)
+            )
 
 class DenseSegmModel(nn.Module):
     def __init__(self, input_channels, num_filters=32, num_classes=1, pretrained=False):
@@ -64,6 +74,7 @@ class DenseSegmModel(nn.Module):
         self.transition = TransitionLayer(in_chnl=1024, out_chnl=1024)
 
         self.pool = nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
+        self.bottleneck = Bottleneck(in_chnl=1024+num_filters*8, out_chnl=num_filters*8)
 
         self.center = UpsampleLayer(in_chnl=1024, mid_chnl=num_filters*8, out_chnl=num_filters*8)
         self.dec5 = UpsampleLayer(1024 + num_filters*8, num_filters*8, num_filters*8)
@@ -83,7 +94,8 @@ class DenseSegmModel(nn.Module):
         out = self.transition(conv5)
 
         center = self.center(out)
-        dec5 = self.pool(self.dec5(torch.cat([center, conv5], 1)))
+        #dec5 = self.bottleneck(self.dec5(torch.cat([center, conv5], 1)))
+        dec5 = self.bottleneck(torch.cat([center, conv5], 1))
         dec4 = self.dec4(torch.cat([dec5, conv4], 1))
         dec3 = self.dec3(torch.cat([dec4, conv3], 1))
         dec2 = self.dec2(torch.cat([dec3, conv2], 1))

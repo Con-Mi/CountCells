@@ -42,11 +42,11 @@ for img_id in tqdm(images, total=len(images)):
     pred = sigmoid(output)
     pred = pred.squeeze()
     output_np = pred.detach().numpy()
-    #binary_out = np.where(output_np > thrs, upper, lower)
-    binary_out = output_np
+    binary_out = np.where(output_np > thrs, upper, lower)
+    #binary_out = output_np
     #mask = Image.fromarray(binary_out)
     #mask.save(img_id + "_mask.png")
-    plt.imsave(prediction_path + img_id + "_mask.png", binary_out)
+    plt.imsave(prediction_path + img_id + "_mask.png", binary_out, cmap = "tab20b")
     #plt.imshow(binary_out)
     #plt.title(img_id)
     #plt.show()

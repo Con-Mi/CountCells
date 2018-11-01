@@ -29,8 +29,8 @@ segm_model = nn.DataParallel(segm_model)
 
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
-# optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
-optimizerSGD = optim.Adagrad(segm_model.parameters(), lr=lr_rate)
+optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
+# optimizerSGD = optim.Adagrad(segm_model.parameters(), lr=lr_rate)
 criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
@@ -96,4 +96,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="var_dense_linknet_384_green_adgrad_bce.pt")
+save_model(segm_model, name="var_dense_linknet_384_green_sgd_bce.pt")
