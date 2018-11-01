@@ -3,7 +3,7 @@ from torch import nn
 from torch import optim
 from torchvision import transforms
 
-from dense_linknet_model import denseLinkModel
+from var_dense_linknet_model import denseLinkModel
 from helper import jaccard, dice, save_model
 from dataloader import CellDataLoader, CellTrainValidLoader
 
@@ -29,8 +29,8 @@ segm_model = nn.DataParallel(segm_model)
 
 mul_transf = [ transforms.Resize(size=(img_size, img_size)), transforms.ToTensor() ]
 
-#optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
-optimizerSGD = optim.Adagrad(segm_model.parameters(), lr=lr_rate)
+optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
+# optimizerSGD = optim.Adagrad(segm_model.parameters(), lr=lr_rate)
 criterion = nn.SmoothL1Loss().cuda() if use_cuda else nn.SmoothL1Loss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
@@ -96,4 +96,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="dense_linknet_384_pred_green.pt")
+save_model(segm_model, name="dense_linknet_384_sgd_green_pred.pt")
