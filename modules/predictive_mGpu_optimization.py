@@ -18,7 +18,7 @@ batch_size = 12
 nr_epochs = 50
 momentum = 0.93
 lr_rate = 0.035
-milestones = [ 5, 8, 17, 24, 30, 36, 40, 44, 48 ]
+milestones = [ 7, 11, 17, 24, 30, 36, 40, 44, 48 ]
 img_size = 384
 gamma = 0.5
 
