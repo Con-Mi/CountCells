@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 8
+batch_size = 12
 nr_epochs = 50
 momentum = 0.93
 lr_rate = 0.035
@@ -34,7 +34,7 @@ optimizerSGD = optim.SGD(segm_model.parameters(), lr=lr_rate, momentum=momentum)
 criterion = nn.BCEWithLogitsLoss().cuda() if use_cuda else nn.BCEWithLogitsLoss()
 scheduler = optim.lr_scheduler.MultiStepLR(optimizerSGD, milestones=milestones, gamma=gamma)
 
-train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=4)
+train_loader, valid_loader = CellTrainValidLoader(data_transform=transforms.Compose(mul_transf), batch_sz=batch_size, workers=1)
 
 dict_loaders = {"train":train_loader, "valid":valid_loader}
 
