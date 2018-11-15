@@ -10,6 +10,7 @@ from dataloader import CellDataLoader, CellTrainValidLoader
 import time
 import copy
 from tqdm import tqdm
+import gc
 
 
 use_cuda = torch.cuda.is_available()
@@ -89,6 +90,7 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
         print("^"*15)
         print(" ")
         scheduler.step()
+    gc.collect()
     time_elapsed = time.time() - start_time
     print("Training Complete in {:.0f}m {:.0f}s".format(time_elapsed//60, time_elapsed % 60))
     print("Best Validation Accuracy: {:.4f}".format(best_acc))
