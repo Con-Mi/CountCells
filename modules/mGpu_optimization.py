@@ -64,7 +64,8 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
 
                 with torch.set_grad_enabled(phase == "train"):
                     out = cust_model(input_img)
-                    preds = torch.sigmoid(out)                
+                    #preds = torch.sigmoid(out)                
+                    preds = out # NOTE: THIS CHANGE HERE
                     loss = criterion(preds, labels)
 
                     if phase == "train":
