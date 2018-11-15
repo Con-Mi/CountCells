@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 # Hyperparameters
-batch_size = 14
+batch_size = 12
 nr_epochs = 50
 momentum = 0.93
 lr_rate = 0.035
@@ -63,8 +63,9 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
                 optimizer.zero_grad()
 
                 with torch.set_grad_enabled(phase == "train"):
-                    out = cust_model(input_img)
-                    preds = torch.sigmoid(out)                
+                    #out = cust_model(input_img)
+                    preds = cust_model(input_img)
+                    #preds = torch.sigmoid(out)                
                     loss = criterion(preds, labels)
 
                     if phase == "train":
