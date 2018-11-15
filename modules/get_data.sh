@@ -25,15 +25,15 @@ mkdir ./DSB-Stage1
 mkdir ./GenData
 cd ./GenData
 mkdir ./TrainData
-cd /TrainData
+cd ./TrainData
 mkdir ./images
 mkdir ./labels
 cd ..
 cd ..
 
 unzip stage1_train.zip -d ./DSB-Stage1
-cd ../modules
 rm stage1_train.zip
+cd ../modules
 
 echo -e "${YELLOW} Making the data now.."
 echo -e "${NC}"
