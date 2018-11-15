@@ -25,7 +25,7 @@ mkdir ./DSB-Stage1
 mkdir ./GenData
 cd ./GenData
 mkdir ./TrainData
-cd /TrainData
+cd ./TrainData
 mkdir ./images
 mkdir ./labels
 cd ..
