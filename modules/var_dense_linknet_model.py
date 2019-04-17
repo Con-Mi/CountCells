@@ -3,16 +3,16 @@ from torch import nn
 import torch
 
 
-class ConvEluGrNorm(nn.Module):
+class ConvCEluGrNorm(nn.Module):
     def __init__(self, inp_chnl, out_chnl):
-        super(ConvEluGrNorm, self).__init__()
+        super(ConvCEluGrNorm, self).__init__()
         self.conv = nn.Conv2d(in_channels=inp_chnl, out_channels=out_chnl, kernel_size=3, padding=1, bias=False)
         self.norm = nn.GroupNorm(num_groups=16, num_channels=out_chnl)
-        self.elu = nn.ELU(inplace=True)
+        self.celu = nn.CELU(inplace=True)
     def forward(self, x):
         out = self.conv(x)
         out = self.norm(out)
-        out = self.elu(out)
+        out = self.celu(out)
         return out
 
 class UpsampleLayer(nn.Sequential):
@@ -22,15 +22,15 @@ class UpsampleLayer(nn.Sequential):
             self.block = nn.Sequential(
                 nn.GroupNorm(num_groups=16, num_channels=in_chnl),
                 nn.Upsample(scale_factor=2, mode="nearest"),
-                ConvEluGrNorm(in_chnl, mid_chnl),
-                ConvEluGrNorm(mid_chnl, out_chnl)
+                ConvCEluGrNorm(in_chnl, mid_chnl),
+                ConvCEluGrNorm(mid_chnl, out_chnl)
             )
         else:
             self.block = nn.Sequential(
-                ConvEluGrNorm(in_chnl, mid_chnl),
+                ConvCEluGrNorm(in_chnl, mid_chnl),
                 nn.ConvTranspose2d(in_channels=mid_chnl, out_channels=out_chnl, 
                         kernel_size=4, stride=2, padding=1, bias=False),
-                nn.ELU(inplace=True)
+                nn.CELU(inplace=True)
             )
 
 class TransitionLayer(nn.Sequential):
@@ -49,11 +49,11 @@ class Bottleneck(nn.Sequential):
         super(Bottleneck, self).__init__()
         self.block = nn.Sequential(
             nn.GroupNorm(num_groups=16, num_channels=in_chnl),
-            nn.ELU(),
+            nn.CELU(),
             nn.Conv2d(in_channels=in_chnl, out_channels=in_chnl, kernel_size=1, padding=0,  bias=False),
             nn.GroupNorm(num_groups=16, num_channels=in_chnl),
-            nn.ELU(),
-            ConvEluGrNorm(inp_chnl=in_chnl, out_chnl=out_chnl)
+            nn.CELU(),
+            ConvCEluGrNorm(inp_chnl=in_chnl, out_chnl=out_chnl)
             )
 
 class DenseSegmModel(nn.Module):

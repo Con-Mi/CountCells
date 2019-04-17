@@ -63,18 +63,16 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
                 optimizer.zero_grad()
 
                 with torch.set_grad_enabled(phase == "train"):
-                    #out = cust_model(input_img)
+                    
                     preds = cust_model(input_img)
-                    #preds = torch.sigmoid(out)                
-                    #preds = out # NOTE: THIS CHANGE HERE
                     loss = criterion(preds, labels)
 
                     if phase == "train":
                         loss.backward()
                         optimizer.step()
                 running_loss += loss.item() * input_img.size(0)
-                jaccard_acc += jaccard(labels, preds)
-                #dice_acc += dice(labels, preds)
+                jaccard_acc += jaccard(labels, torch.sigmoid(preds))
+                dice_acc += dice(labels, torch.sigmoid(preds))
             
             epoch_loss = running_loss / len(dataloaders[phase])
             aver_jaccard = jaccard_acc / len(dataloaders[phase])
@@ -98,4 +96,4 @@ def train_model(cust_model, dataloaders, criterion, optimizer, num_epochs, sched
     return cust_model, val_acc_history
 
 segm_model, acc = train_model(segm_model, dict_loaders, criterion, optimizerSGD, nr_epochs, scheduler=scheduler)
-save_model(segm_model, name="var_dense_linknet_512_sgd_bce.pt")
+save_model(segm_model, name="dense_linknet_384_sgd_bce.pt")
