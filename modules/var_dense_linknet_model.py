@@ -38,7 +38,7 @@ class TransitionLayer(nn.Sequential):
         super(TransitionLayer, self).__init__()
         self.block = nn.Sequential(
             nn.GroupNorm(num_groups = 16, num_channels=in_chnl),
-            nn.ELU(inplace=True),
+            nn.CELU(inplace=True),
             nn.Conv2d(in_chnl, out_chnl, kernel_size=1, padding=0, bias=False),
             nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
         )
@@ -63,7 +63,7 @@ class DenseSegmModel(nn.Module):
         self.layer1 = nn.Sequential(
             nn.Conv2d(in_channels = input_channels, out_channels=64, kernel_size=7, stride=2, padding=3, bias=False),
             nn.GroupNorm(num_groups=16, num_channels=64),
-            nn.ELU(inplace=True),
+            nn.CELU(inplace=True),
             encoder[3]
         )                              
         self.layer2 = encoder[4:6]     
