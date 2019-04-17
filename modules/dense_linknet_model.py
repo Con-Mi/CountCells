@@ -8,11 +8,11 @@ class ConvEluGrNorm(nn.Module):
         super(ConvEluGrNorm, self).__init__()
         self.conv = nn.Conv2d(in_channels=inp_chnl, out_channels=out_chnl, kernel_size=3, padding=1, bias=False)
         self.norm = nn.GroupNorm(num_groups=16, num_channels=out_chnl)
-        self.elu = nn.ELU(inplace=True)
+        self.celu = nn.CELU(inplace=True)
     def forward(self, x):
         out = self.conv(x)
         out = self.norm(out)
-        out = self.elu(out)
+        out = self.celu(out)
         return out
 
 class UpsampleLayer(nn.Sequential):
@@ -29,7 +29,7 @@ class UpsampleLayer(nn.Sequential):
                 ConvEluGrNorm(in_chnl, mid_chnl),
                 nn.ConvTranspose2d(in_channels=mid_chnl, out_channels=out_chnl, 
                         kernel_size=4, stride=2, padding=1, bias=False),
-                nn.ELU(inplace=True)
+                nn.CELU(inplace=True)
             )
 
 class DenseSegmModel(nn.Module):
@@ -39,7 +39,7 @@ class DenseSegmModel(nn.Module):
         self.layer1 = nn.Sequential(
             nn.Conv2d(in_channels = input_channels, out_channels=64, kernel_size=7, stride=2, padding=3, bias=False),
             nn.GroupNorm(num_groups=16, num_channels=64),
-            nn.ELU(inplace=True),
+            nn.CELU(inplace=True),
             encoder[3]
         )                              
         self.layer2 = encoder[4:6]     
