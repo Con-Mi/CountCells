@@ -1,9 +1,16 @@
 import os
-from skimage import io
 import sys
+
+from skimage import io
 from tqdm import tqdm
 import numpy as np
 from PIL import Image
+
+import cv2
+from matplotlib import pyplot as plt
+from scipy.ndimage import binary_dilation, binary_erosion, binary_closing
+from skimage.morphology import dilation, watershed, square, erosion
+from skimage.measure import label, regionprops
 
 
 TRAIN_PATH = "../data/DSB-Stage1/"
@@ -13,6 +20,18 @@ train_ids = next(os.walk(TRAIN_PATH))[1]
 traind_ids = sorted(train_ids)
 print("Getting images and reconstructing masks..")
 sys.stdout.flush()
+
+def create_contour(labels):
+    mask = labels.copy()
+    mask[mask > 0] = 1
+    dilated = binary_dilation(mask, iterations=10)
+    mask_w1 = watershed(dilated, labels, mask=dilated, watershed_line=True)
+    mask_w1[mask_w1 > 0] = 1
+    contours = dilated - mask_w1
+    contours = binary_dilation(contours, iterations=1)
+    return contours
+
+# In Progress
 
 for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
     path = TRAIN_PATH+id_
